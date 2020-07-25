@@ -16,9 +16,16 @@ Including another URLconf
 from django.contrib import admin
 from django.conf import settings
 from django.urls import include, path
+from api import views as api_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('api-auth/', include('djoser.urls.authtoken')),
+    path('api-auth/', include('rest_framework.urls')),
+    path('api/', api_views.api_root),
+    path('api/books/', api_views.BooksList.as_view(), name="books"),
+    path('api/<int:book_pk>/notes/', api_views.NotesList.as_view(), name="notes"),
+    path('api/authors/', api_views.AuthorsList.as_view(), name="authors"),
 ]
 
 if settings.DEBUG:
