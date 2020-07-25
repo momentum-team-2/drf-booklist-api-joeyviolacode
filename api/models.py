@@ -8,10 +8,13 @@ class User(AbstractUser):
 
 
 class Author(models.Model):
-    name = models.CharField(max_length=255)
+    last_name = models.CharField(max_length=255)
+    first_name = models.CharField(max_length=255, blank=True, null=True)
 
     def __str__(self):
-        return f'{name}'
+        if first_name:
+            return f'{last_name}, {first_name}'
+        return f'{last_name}'
 
 
 class Book(models.Model):
