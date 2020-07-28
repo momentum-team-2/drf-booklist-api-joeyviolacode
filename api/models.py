@@ -1,10 +1,20 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.conf import settings
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from rest_framework.authtoken.models import Token
 
+
+
+@receiver(post_save, sender=settings.AUTH_USER_MODEL)
+def create_auth_token(sender, instance=None, created=False, **kwargs):
+    if created:
+        Token.objects.create(user=instance)
 
 
 class User(AbstractUser):
-    pass
+    show_timeline = models.BooleanField(default=True)
 
 
 class Author(models.Model):
@@ -18,7 +28,7 @@ class Author(models.Model):
 
 
 class Book(models.Model):
-    STATUS = [ ("to read" , "to read"), ("reading", "reading"), ("read", "read") ]
+    STATUS = [ ("to-read" , "to-read"), ("reading", "reading"), ("read", "read") ]
 
     title = models.CharField(max_length=255)
     authors = models.ManyToManyField(Author, related_name="books", blank=True)
@@ -27,7 +37,6 @@ class Book(models.Model):
 
     def __str__(self):
         return f'{self.title}'
-
 
 
 class Note(models.Model):
